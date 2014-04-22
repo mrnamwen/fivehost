@@ -15,6 +15,6 @@ Just by simply editing this code. If you want credit, just comment in your name 
 
 ###Further information
 
-5Host was officially incepted by Liam Newman and Ian Murray, also known as [Voxelvein Studios](http://www.voxelvein.com) As of the terms given within the MIT License, you may not claim this work or any similar works (e.g. community contributions) as your own.
+5Host was officially incepted by Liam Newman and Ian Murray, also known as [Voxelvein Studios](http://www.voxelvein.com). As of the terms given within the MIT License, you may not claim this work or any similar works (e.g. community contributions) as your own.
 
 Bootstrap, Twitter Bootstrap, the Bootstrap logo, or any similar works are licensed under the MIT License, and are licensed to [@mdo](https://twitter.com/mdo) and [@fat](https://twitter.com/fat).
