@@ -9,25 +9,30 @@
   -------------------------------------------
 */
 
+//Get our ID
+
+  if(isset($_GET['id'])) {
+$category = $_GET['id'];
+} else {
+    die('No ID specified. Cannot continue.');
+}
+
 //Connection to SQL Database, Script terminated if unable to connect
   mysql_connect("localhost","root","","5host") or die(mysql_error());
 
   //Select Database (Because for some reason selecting the database via mysql_connect doesn't work ): )
   mysql_select_db("5host");
 
-//Retrieving last 10 uploads from database
-  $result = mysql_query('SELECT * FROM uploads
-ORDER BY id DESC
-LIMIT 10') or die(mysql_error());
+//Retrieving all files 
+  $result = mysql_query('SELECT * FROM uploads WHERE `category` = ' . $category) or die(mysql_error());
 
-//Get category name
+  //Get category name
   function getName($catid) {
     $nresult = mysql_query('SELECT `name` FROM categories WHERE `id` = ' . $catid) or die(mysql_error());
     $final = mysql_fetch_row($nresult);
     $final = $final[0];
     return $final;
   }
-
 
 ?>
 
@@ -92,12 +97,12 @@ LIMIT 10') or die(mysql_error());
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">5host</a>
+          <a class="navbar-brand" href=".">5host</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active">
-              <a href="#">Overview</a>
+              <a href=".">Overview</a>
             </li>
             <li>
               <a href="cat.php?id=1">Movies</a>
@@ -128,12 +133,16 @@ LIMIT 10') or die(mysql_error());
         <div class="col-xs-12 col-sm-9">
           <p class="pull-right visible-xs">
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button></p>
-          <div class="jumbotron">
-            <h1>Welcome to 5Host.</h1>
-            <p>5Host is an anonymous file sharing site that allows people to view any file uploaded by users. There is <b>little to no moderation</b>, so make sure that you know what you're going in for.</p>
-          </div>
           <!--/row-->
-          <h1 class="page-header">Recent Uploads</h1>
+          <h1 class="page-header">Upload a file to <?php echo getName($category); ?></h1>
+          <!-- not setup right now -->
+          <form action="notworkingatm" method="post"
+enctype="multipart/form-data">
+<label for="file">Filename:</label>
+<input type="file" name="file" id="file"><br>
+<input type="submit" name="submit" value="Submit">
+</form>
+          <h1 class="page-header">All uploads in <?php echo getName($category); ?></h1>
           <?php 
             //Table Creation
             echo "<table>";
@@ -143,7 +152,7 @@ LIMIT 10') or die(mysql_error());
                 <tr>
                 <td style="padding-left:2em"><a href="uploads/<?php echo $row['filename']?>" class="btn btn-success btn-large">Download</a></td>
                 <td style="padding-left:1em"><a href="info.php?id=<?php echo $row['id']?>" class="btn btn-info btn-large">Info</a></td>
-                <td><h1 style="padding-left:2em"><?php echo $row['name']; ?></h1><p>File in category: <?php echo getName($row['category']); ?></p></td>
+                <td><h1 style="padding-left:2em"><?php echo $row['name']; ?></h1></td>
                 </tr>
                 </table>
                 <?php
