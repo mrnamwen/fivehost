@@ -1,38 +1,25 @@
 <?php 
+
+    include "config.php";
+
 /*
-  -------------------------------------------
-  5HOST Version 1.00
-  Developed by:
-  Liam Newman
-  Ian Murray
-  Github Link Planned
-  -------------------------------------------
+5HOST Version 0.1
+Developed by:
+ - Liam Newman
+ - Ian Murray
+ - Felix Angell
 */
 
-//Get our ID
-
-  if(isset($_GET['id'])) {
-$category = $_GET['id'];
+if(isset($_GET['id'])) {
+    $category = $_GET['id'];
 } else {
     die('No ID specified. Cannot continue.');
 }
 
-//Connection to SQL Database, Script terminated if unable to connect
-  mysql_connect("localhost","root","","5host") or die(mysql_error());
-
-  //Select Database (Because for some reason selecting the database via mysql_connect doesn't work ): )
-  mysql_select_db("5host");
-
-//Retrieving all files 
-  $result = mysql_query('SELECT * FROM uploads WHERE `category` = ' . $category) or die(mysql_error());
-
-  //Get category name
-  function getName($catid) {
-    $nresult = mysql_query('SELECT `name` FROM categories WHERE `id` = ' . $catid) or die(mysql_error());
-    $final = mysql_fetch_row($nresult);
-    $final = $final[0];
-    return $final;
-  }
+$query = "SELECT * FROM uploads WHERE 'category' = VALUES (?)";
+$qdata = array($category);
+$stmt = $conn->prepare($query);
+$stmt->execute($qdata);
 
 ?>
 
@@ -94,7 +81,7 @@ $category = $_GET['id'];
           <p class="pull-right visible-xs">
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button></p>
           <!--/row-->
-          <h1 class="page-header">Upload a file to <?php echo getName($category); ?></h1>
+          <h1 class="page-header">Upload a file to <?php echo getName($conn, $category); ?></h1>
           <!-- not setup right now -->
           <form action="notworkingatm" method="post"
 enctype="multipart/form-data">
@@ -102,11 +89,11 @@ enctype="multipart/form-data">
 <input type="file" name="file" id="file"><br>
 <input type="submit" name="submit" value="Submit">
 </form>
-          <h1 class="page-header">All uploads in <?php echo getName($category); ?></h1>
+          <h1 class="page-header">All uploads in <?php echo getName($conn, $category); ?></h1>
           <?php 
             //Table Creation
             echo "<table>";
-              while($row = mysql_fetch_array($result)){ //Getting array of data
+              while($row = $stmt->fetch(PDO::FETCH_ASSOC)) { //Getting array of data
                 ?>
                 <table>
                 <tr>

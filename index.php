@@ -1,4 +1,7 @@
 <?php
+
+    include "config.php";
+
 /*
 5HOST Version 0.1
 Developed by:
@@ -7,18 +10,9 @@ Developed by:
  - Felix Angell
 */
 
-mysql_connect("localhost", "root", "", "5host") or die(mysql_error());
-
-mysql_select_db("5host");
-
-$result = mysql_query('SELECT * FROM uploads ORDER BY id DESC LIMIT 10') or die(mysql_error());
-
-function getName($catid) {
-    $nresult = mysql_query('SELECT `name` FROM categories WHERE `id` = ' . $catid) or die(mysql_error());
-    $final = mysql_fetch_row($nresult);
-    $final = $final[0];
-    return $final;
-}
+$query = "SELECT * FROM uploads ORDER BY id DESC LIMIT 10";
+$stmt = $conn->prepare($query);
+$stmt->execute();
 
 
 ?>
@@ -71,10 +65,8 @@ function getName($catid) {
             </li>
           </ul>
         </div>
-        <!-- /.nav-collapse -->
       </div>
-      <!-- /.container -->
-    </div><!-- /.navbar -->
+    </div>
     <div class="container">
       <div class="row row-offcanvas row-offcanvas-right">
         <div class="col-xs-12 col-sm-9">
@@ -84,12 +76,10 @@ function getName($catid) {
             <h1>Welcome to 5Host.</h1>
             <p>5Host is an anonymous file sharing site that allows people to view any file uploaded by users. There is <b>little to no moderation</b>, so make sure that you know what you're going in for.</p>
           </div>
-          <!--/row-->
           <h1 class="page-header">Recent Uploads</h1>
                 <?php
-                //Table Creation
                 echo "<table>";
-                while ($row = mysql_fetch_array($result)) { //Getting array of data
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <table>
                 <tr>
@@ -102,7 +92,7 @@ function getName($catid) {
                 <td><h1 style="padding-left:2em"><?php
     echo $row['name'];
 ?></h1><p>File in category: <?php
-    echo getName($row['category']);
+    echo getName($conn, $row['category']);
 ?></p></td>
                 </tr>
                 </table>
